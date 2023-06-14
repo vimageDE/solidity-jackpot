@@ -99,7 +99,9 @@ contract Jackpot is VRFConsumerBaseV2, KeeperCompatibleInterface {
     ) external override returns (bool upkeepNeeded, bytes memory /*performData*/) {}
 
     // perform Upkeep is the function that will be called, when checkUpkeep has turned true
-    function performUpkeep(bytes calldata /* performData */) external override {}
+    function performUpkeep(bytes calldata /* performData */) external override {
+        s_gameState = GameState.CALCULATING;
+    }
 
     function fulfillRandomWords(uint256 /* requestId */, uint256[] memory randomWords) internal override {}
 
@@ -126,5 +128,21 @@ contract Jackpot is VRFConsumerBaseV2, KeeperCompatibleInterface {
 
     function getGameState() public view returns (GameState) {
         return s_gameState;
+    }
+
+    function getGameStartTimeStamp() public view returns (uint256) {
+        return s_gameStartTimeStamp;
+    }
+
+    function getAddressToAmount(address player) public view returns (uint256) {
+        return s_addressToAmount[player];
+    }
+
+    function getPlayersAmount() public view returns (uint256) {
+        return s_players.length;
+    }
+
+    function getPlayerAtIndex(uint256 index) public view returns (address) {
+        return s_players[index];
     }
 }

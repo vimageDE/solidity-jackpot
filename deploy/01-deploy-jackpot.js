@@ -4,7 +4,6 @@ const { networkConfig } = require('../helper-hardhat-config');
 const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther('30');
 
 module.exports = async function ({ deployments }) {
-  return;
   const { deploy, log } = deployments;
   const [deployer] = await ethers.getSigners();
   let vrfCoordinatorV2Address, subscriptionId;

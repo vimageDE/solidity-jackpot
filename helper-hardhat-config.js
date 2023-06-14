@@ -39,7 +39,7 @@ const frontEndContractsFile = '../nextjs-smartcontract-lottery-fcc/constants/con
 const frontEndAbiFile = '../nextjs-smartcontract-lottery-fcc/constants/abi.json';
 
 module.exports = {
-  // networkConfig,
+  networkConfig,
   developmentChains,
   VERIFICATION_BLOCK_CONFIRMATIONS,
   frontEndContractsFile,
