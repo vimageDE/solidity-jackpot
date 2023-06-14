@@ -21,13 +21,13 @@ $ npm test              # run tests
 ```
 
 Install Hardhat Deploy:
+
 ```bash
 $ npm add --include=dev hardhat-deploy
 $ npm add --include=dev @nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers ethers
 Add to hardhat.config.js:
 require('hardhat-deploy');
 ```
-
 
 optional:
 
