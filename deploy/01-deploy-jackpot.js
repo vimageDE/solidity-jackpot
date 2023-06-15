@@ -5,8 +5,13 @@ const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther('30');
 
 module.exports = async function ({ deployments }) {
   const { deploy, log } = deployments;
+  // Account
   const [deployer] = await ethers.getSigners();
+  // VRF2 Variables
   let vrfCoordinatorV2Address, subscriptionId;
+  const gasLane = network.config.gasLane;
+  const callbackGasLimit = network.config.callbackGasLimit;
+  // Provider Variables
   const localChain = network.config.local;
   const chainId = network.config.chainId;
   const waitBlockConfirmations = network.config.blockConfirmations || 1;
@@ -29,7 +34,16 @@ module.exports = async function ({ deployments }) {
   const winRate = networkConfig[chainId]['jackPotWinRate'];
   const gameTime = networkConfig[chainId]['keepersUpdateInterval'];
 
-  const args = [vrfCoordinatorV2Address, entranceFee_min, entranceFee_max, winRate, gameTime];
+  const args = [
+    vrfCoordinatorV2Address,
+    gasLane,
+    subscriptionId,
+    callbackGasLimit,
+    entranceFee_min,
+    entranceFee_max,
+    winRate,
+    gameTime,
+  ];
   const jackpot = await deploy('Jackpot', {
     from: deployer.address,
     args: args,
@@ -45,9 +59,9 @@ module.exports = async function ({ deployments }) {
 
   if (!localChain && process.env.ETHERSCAN_TOKEN) {
     log('Verifying...');
-    await verify(raffle.address, args);
+    await verify(jackpot.address, args);
   }
   log('------------------------------');
 };
 
-module.exports.tags = ['all', 'raffle'];
+module.exports.tags = ['all', 'jackpot'];

@@ -7,8 +7,6 @@ module.exports = async function ({ deployments }) {
   const { deploy, log } = deployments;
   const [deployer] = await ethers.getSigners();
   const localDeploy = network.config.local;
-  log('This should be run first! Network Local: ', network.config.local);
-  log('This should be run first! Deployer Address: ', deployer.address);
   if (localDeploy) {
     log('Local network detected! Deploying mocks...');
     // deploy a mock vrfcoordinator...
