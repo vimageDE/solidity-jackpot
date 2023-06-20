@@ -20,6 +20,7 @@ error Jackpot_UpkeepNotNeeded(uint256 currentBalance, uint256 numPlayers, uint25
 error Jackpot__NoWinnerFound(uint256 randomWord);
 error Jackpot_TansferToWinnerFailed(address winner, uint256 winAmount);
 error Jackpot_TansferToOwnerFailed(uint256 feeAmount);
+error Jackpot_NotOwner();
 
 contract Jackpot is VRFConsumerBaseV2, KeeperCompatibleInterface {
     // Type declaration
@@ -64,6 +65,7 @@ contract Jackpot is VRFConsumerBaseV2, KeeperCompatibleInterface {
         uint256 contractStartingBalance
     );
     event GameFeeTransfered(uint256 amount);
+    event ResetGame();
 
     constructor(
         address vrfCoordinatorV2,
@@ -149,6 +151,25 @@ contract Jackpot is VRFConsumerBaseV2, KeeperCompatibleInterface {
         );
 
         emit RequestedJackpotWinner(requestId);
+    }
+
+    function ResetLottery() external {
+        if (msg.sender != i_owner) {
+            revert Jackpot_NotOwner();
+        }
+        for (uint256 i = 0; i < s_players.length; i++) {
+            address payable refundAddress = s_players[i];
+            uint256 refundBalance = s_addressToAmount[refundAddress];
+
+            s_addressToAmount[s_players[i]] = 0;
+            (bool successRefund, ) = refundAddress.call{value: refundBalance}("");
+            s_addressToAmount[refundAddress] = 0;
+        }
+        s_gameState = GameState.WAITING;
+        s_players = new address payable[](0);
+        s_gameStartTimeStamp = block.timestamp;
+
+        emit ResetGame();
     }
 
     function fulfillRandomWords(uint256 /* requestId */, uint256[] memory randomWords) internal override {
